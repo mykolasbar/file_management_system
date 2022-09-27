@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <script type='text/javascript' src='jsitems.js' defer></script>
     <title>Document</title>
 </head>
 <body class="bg-info text-white">
@@ -44,16 +45,12 @@
                     $insert->execute();
                     $insert->close();
 
-                    // $resulte = mysqli_query($conn, $insert);
-                    // $resulte = mysqli_query($conn, $employees);
-    
                     $nextincrementquery = "SHOW TABLE STATUS LIKE 'Employees'";
                     $nextincrementresult = mysqli_query($conn, $nextincrementquery);
                     $nextincrementdata = mysqli_fetch_assoc($nextincrementresult);
                     $nextincrement = $nextincrementdata['Auto_increment'] - 1;
                     
                     header('Location: ' . $_SERVER['PHP_SELF']);
-                        // echo $nextincrement;
     
                     if (!empty($_POST['checkitems'])){
                         foreach ($_POST['checkitems'] as $project) {
@@ -72,6 +69,46 @@
         }
     
     // </Add employee with assigned project>
+
+    // <Update employee>
+
+    if($_SERVER["REQUEST_METHOD"] === "POST"){
+        if (isset($_POST['updateemployee'])) {
+            echo 'eeee';
+            if (isset($_POST['employeeid'])) {
+                if (isset($_POST['updatefirstname']) && isset($_POST['updatelastname'])){
+                    echo ('aaaaaaaa');
+                    echo $_POST['updatefirstname'];
+                    echo $_POST['updatelastname'];
+                    echo $_POST['employeeid'];
+                    $update = $conn->prepare("UPDATE employees SET firstname = ?, lastname = ? WHERE id = ?;");
+                    $update->bind_param("ssi", $_POST['updatefirstname'], $_POST['updatelastname'], $_POST['employeeid']);
+                    $update->execute();
+                    $update->close();
+                    
+                    header('Location: ' . $_SERVER['PHP_SELF']);
+    
+                    if (!empty($_POST['updatecheckitems'])){
+                        foreach ($_POST['updatecheckitems'] as $updateproject) {
+                                
+                            // $remove = "UPDATE employees_projects SET projectID = NULL WHERE id =".$_POST['employeeid']."";
+                            // $resultep = mysqli_query($conn, $remove);
+
+                            $readd  = "INSERT INTO employees_projects
+                                       VALUES (".$_POST['employeeid'].", $updateproject)";
+
+                            // $removenulls = "DELETE FROM employees_projects WHERE projectID IN (SELECT ".$_POST['employeeid']." = NULL)";
+    
+                            $resultep = mysqli_query($conn, $readd);
+                            $resultep = mysqli_query($conn, $employees_projects);
+                        
+                    }}
+                } else echo 'not set';
+            }
+            }
+        }        
+
+    // </Update employee>
 
     // <Employee delete>
 
@@ -96,8 +133,7 @@
         <div class='d-flex justify-content-center m-3'><form action='' method='POST' enctype='multipart/form-data'><label for = 'addfirstname' class='m-2'>First name </label><input name = 'addfirstname' type = 'text'></input><label for = 'addlastname' class='m-2'> Last name </label><input name = 'addlastname' type = 'text'></input><label for = 'selectproject' class='m-2'> Assign projects: </label>";
         if (mysqli_num_rows($resultp) > 0) {
             while($row = mysqli_fetch_assoc($resultp)) {
-                echo "
-                    <input type ='checkbox' name = 'checkitems[]' value = '" . $row["projectID"]. "'>".$row["projectname"]."";
+                echo "<input type ='checkbox' name = 'checkitems[]' value = '" . $row["projectID"]. "'>".$row["projectname"]."";
             }
         } else {
             echo "No projects added";
@@ -118,7 +154,6 @@
                         <td class = 'p-3'>Assigned projects:<br>";
                         $showprojects = "SELECT id, projectname FROM employees_projects LEFT JOIN projects ON employees_projects.projectID = projects.projectID WHERE id = " . $row["id"]. "";
                         $showprojectsresults = mysqli_query($conn, $showprojects);
-                                    // $resultp = mysqli_query($conn, $projects);
                         if (mysqli_num_rows($showprojectsresults) > 0) {
                             while($projectsrow = mysqli_fetch_assoc($showprojectsresults)) {
                                 echo '<b>' . $projectsrow["projectname"] . '</b><br>';
@@ -126,11 +161,27 @@
                             }
                         else echo "none";
                             echo "</td>
-                        <td style = 'padding:5px; width:100px'><form action='' method='POST' enctype='multipart/form-data'><input type='hidden' name='deletion' value=" . $row['id']. " /><button type='submit' name = 'delete' class='btn btn-warning'>Delete</button></form></td>
+                            <td><button class='btn btn-warning' onclick='updateemployees(event)'>Update</button></td>
+                            <td style = 'padding:5px; width:100px'><form action='' method='POST' enctype='multipart/form-data'><input type='hidden' name='deletion' value=" . $row['id']. " /><button type='submit' name = 'delete' class='btn btn-warning'>Delete</button></form></td>
+                    </tr>
+                    <tr style = 'background-color:rgb(25,25,150); display:none'>
+                        <td class = 'm-5 p-3' colspan = '6'><form action='' method='POST' enctype='multipart/form-data'><label for = 'employeeid' class='m-2'>" . $row['id']. " </label><input type='hidden' name='employeeid' value=" . $row['id']. " /><label for = 'updatefirstname' class='m-2'>First name </label><input name = 'updatefirstname' type = 'text'></input><label for = 'updatelastname' class='m-2'> Last name </label><input name = 'updatelastname' type = 'text'></input><label for = 'updatecheckitems[]' class='m-2'> Assign projects: </label>";
+                            $projectstoupdate = "SELECT projectID, projectname FROM projects";
+                            $resultptu = mysqli_query($conn, $projectstoupdate);
+                            if (mysqli_num_rows($resultp) > 0) {
+                                while($prrow = mysqli_fetch_assoc($resultptu)) {
+                                    echo "<input type ='checkbox' name = 'updatecheckitems[]' value = '" . $prrow["projectID"]. "'>".$prrow["projectname"]."";
+
+                                    }
+                            } else {
+                                echo "No projects added";
+                            }
+                            echo "</input> <button name = 'updateemployee' type='submit' class='btn btn-danger m-2'>Update</button></form>
+                        </td>
                     </tr>";
         }
         } else {
-                // echo "0 results";
+            echo "0 results";
                         }
             echo "</table></div></div>";
 

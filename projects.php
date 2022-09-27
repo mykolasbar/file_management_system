@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
     <title>Document</title>
+    <script type='text/javascript' src='jsitems.js' defer></script>
 </head>
 <body class="bg-info text-white">
-
 <?php
 
     $servername = "localhost";
@@ -22,9 +22,6 @@
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
     }
-
-    // $employees = "SELECT id, firstname, lastname FROM employees";
-    // $resulte = mysqli_query($conn, $employees);
 
     $projects = "SELECT projectID, projectname FROM projects";
     $resultp = mysqli_query($conn, $projects);
@@ -41,9 +38,8 @@
                 $update = $conn->prepare("UPDATE projects SET projectname = '".$_REQUEST["updatestring"]."' WHERE projectID=?");
                 $update->bind_param("i", $_POST["updateid"]);
                 $update->execute();
+                header('Location: ' . $_SERVER['PHP_SELF']);
 
-                // $resultp = mysqli_query($conn, $update);
-                // $resultp = mysqli_query($conn, $projects);
                 }
             }
         }
@@ -61,8 +57,6 @@
                 $insertproject->bind_param("s", $_POST["projectname"]);
                 $insertproject->execute();
 
-                // $resultp = mysqli_query($conn, $insertproject);
-                // $resultp = mysqli_query($conn, $projects);
                 header('Location: ' . $_SERVER['PHP_SELF']);
             }
         }
@@ -98,10 +92,10 @@
     if (mysqli_num_rows($resultp) > 0) {
         while($row = mysqli_fetch_assoc($resultp)) {
             echo "<tr>
-                    <td style = 'padding:5px'>Project ID: </b>" . $row["projectID"]. "</b></td>
-                    <td style = 'padding:5px; width:250px'>Project name: <b>" . $row["projectname"]. "</b></td>
-                    <td style = 'width:250px'><form action='' method='POST' enctype='multipart/form-data'><input type='hidden' name='updateid' value=" . $row['projectID']. " /><button type='submit' for='updatestring' name = 'updatebutton' class='btn btn-warning'>Update</button><input type = 'text' name='updatestring' /></form></td>
-                    <td style = 'width:100px'><form action='' method='POST' enctype='multipart/form-data'><input type='hidden' name='projectdeletion' value=" . $row['projectID']. " /><button type='submit' name = 'projectdelete' class='btn btn-warning'>Delete</button></form></td>
+                    <td style = 'padding:10px'>Project ID: </b>" . $row["projectID"]. "</b></td>
+                    <td style = 'padding:10px; width:250px'>Project name: <b>" . $row["projectname"]. "</b></td>
+                    <td style = 'padding:10px; width:320px'><form action='' method='POST' enctype='multipart/form-data'><input type='hidden' name='updateid' value=" . $row['projectID']. " /><button id='renameaction' class='btn btn-warning' onclick='displayaction(event)'>Rename</button><div style = 'display:none'><input type = 'text' name='updatestring' /><button type='submit' for='updatestring' name = 'updatebutton' class='btn btn-warning m-2'>Submit</button></div></form></td>
+                    <td style = 'padding:10px; width:100px'><form action='' method='POST' enctype='multipart/form-data'><input type='hidden' name='projectdeletion' value=" . $row['projectID']. " /><button type='submit' name = 'projectdelete' class='btn btn-warning'>Delete</button></form></td>
                 </tr>";
                     }
                 } else {
