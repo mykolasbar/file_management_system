@@ -74,13 +74,8 @@
 
     if($_SERVER["REQUEST_METHOD"] === "POST"){
         if (isset($_POST['updateemployee'])) {
-            echo 'eeee';
             if (isset($_POST['employeeid'])) {
                 if (isset($_POST['updatefirstname']) && isset($_POST['updatelastname'])){
-                    echo ('aaaaaaaa');
-                    echo $_POST['updatefirstname'];
-                    echo $_POST['updatelastname'];
-                    echo $_POST['employeeid'];
                     $update = $conn->prepare("UPDATE employees SET firstname = ?, lastname = ? WHERE id = ?;");
                     $update->bind_param("ssi", $_POST['updatefirstname'], $_POST['updatelastname'], $_POST['employeeid']);
                     $update->execute();
@@ -102,8 +97,14 @@
                             $resultep = mysqli_query($conn, $readd);
                             $resultep = mysqli_query($conn, $employees_projects);
                         
-                    }}
-                } else echo 'not set';
+                        }
+                    }
+                    else if (empty($_POST['updatecheckitems'])) {
+                                $emptyprojects = "DELETE FROM employees_projects WHERE id = ".$_POST['employeeid']."";
+                                $resultep = mysqli_query($conn, $emptyprojects);
+                                $resultep = mysqli_query($conn, $employees_projects);
+                    }
+                } 
             }
             }
         }        
