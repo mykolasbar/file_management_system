@@ -4,7 +4,7 @@ An application for managing related employees and projects. PHP and MySQL databa
 
 <h2>Instructions for launch</h2>
 
-Launch your apache server and MySQL, download the github directory, put it in your xampp htdocs folder, open the index.php file via browser's localhost, import the database ("staff" folder) with MySQL.
+Launch your apache server and MySQL, download the github directory, put it in your xampp htdocs folder, open the index.php file via browser's localhost, import the database with MySQL.
 
 <h2>Functionality</h2>
 
