@@ -84,15 +84,15 @@
                     header('Location: ' . $_SERVER['PHP_SELF']);
     
                     if (!empty($_POST['updatecheckitems'])){
-                        foreach ($_POST['updatecheckitems'] as $updateproject) {
-                                
-                            // $remove = "UPDATE employees_projects SET projectID = NULL WHERE id =".$_POST['employeeid']."";
-                            // $resultep = mysqli_query($conn, $remove);
 
+                        $emptyprojects = "DELETE FROM employees_projects WHERE id = ".$_POST['employeeid']."";
+                        $resultep = mysqli_query($conn, $emptyprojects);
+                        $resultep = mysqli_query($conn, $employees_projects);
+                        
+                        foreach ($_POST['updatecheckitems'] as $updateproject) {
+                            
                             $readd  = "INSERT INTO employees_projects
                                        VALUES (".$_POST['employeeid'].", $updateproject)";
-
-                            // $removenulls = "DELETE FROM employees_projects WHERE projectID IN (SELECT ".$_POST['employeeid']." = NULL)";
     
                             $resultep = mysqli_query($conn, $readd);
                             $resultep = mysqli_query($conn, $employees_projects);
