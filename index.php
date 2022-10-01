@@ -111,7 +111,7 @@
 
     // </Update employee>
 
-    // <Employee delete>
+    // <Delete employee>
 
     if($_SERVER["REQUEST_METHOD"] === "POST"){
         if (isset($_POST["delete"])) {
@@ -123,7 +123,7 @@
         }
     }
 
-    // </Employee delete>
+    // </Delete employee>
 
     // <Display employees table>
 

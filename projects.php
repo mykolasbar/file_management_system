@@ -78,7 +78,7 @@
 
     // </Delete project>
 
-    // <Print table>
+    // <Print projects table>
 
     echo "<div class='btn-group m-2 d-flex justify-content-center' role='group'><form action='index.php' method='POST' enctype='multipart/form-data'><button type='submit' name = 'employees' style='background-color:rgb(255, 127, 80); border:1px solid; padding:10px; width:120px; border-radius:5px'>Employees</button></form>
     <form action='' method='POST' enctype='multipart/form-data'><button type='submit' name = 'projects' style='background-color:rgb(255, 127, 80); border:1px solid; padding:10px; width:120px; border-radius:5px'>Projects</button></form></div>";
